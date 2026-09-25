@@ -21,7 +21,7 @@ namespace Hooks {
 	}
 
 	void Install() {
-		stl::write_call<MainUpdateNullSub>(RelocationEx(35565, 36564), OffsetEx(0x748, 0xC26));
+		stl::write_call<MainUpdateNullSub>(RelocationIDEx(35565, 36564), OffsetEx(0x748, 0xC26));
 	}
 
 }
