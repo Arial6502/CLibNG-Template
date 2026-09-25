@@ -146,17 +146,6 @@
         "CMAKE_EXE_LINKER_FLAGS_RELEASE": "/DEBUG:FULL /OPT:REF /OPT:NOICF /LTCG /INCREMENTAL:NO",
         "CMAKE_SHARED_LINKER_FLAGS_RELEASE": "/DEBUG:FULL /OPT:REF /OPT:NOICF /LTCG /INCREMENTAL:NO"
       }
-    },
-    {
-      "name": "config-strict",
-      "displayName": "Strict",
-      "description": "Configure a strict build with warnings as errors.",
-      "inherits": "base-config",
-      "binaryDir": "${sourceDir}/build/Strict",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        "GTS_STRICT_COMPILE": "ON"
-      }
     }
   ],
   "buildPresets": [
@@ -177,12 +166,6 @@
       "displayName": "Build AE/SE (Release AVX)",
       "configurePreset": "config-release-avx",
       "description": "Compile an optimized release build (AVX)."
-    },
-    {
-      "name": "build-strict",
-      "displayName": "Build AE/SE (Strict)",
-      "configurePreset": "config-strict",
-      "description": "Compile a strict release build with warnings as errors."
     }
   ]
 }

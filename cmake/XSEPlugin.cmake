@@ -5,7 +5,7 @@ include(FetchContent)
 FetchContent_Declare(
 	CommonLibSSE                   
     GIT_REPOSITORY https://github.com/alandtse/CommonLibVR/
-    GIT_TAG da5dd61f11d175cf351bfa7c54548ae1abdc6625
+    GIT_TAG a898f469851c464d05137bb74b069dd234897643
     GIT_SHALLOW ON
 )
 
@@ -14,6 +14,7 @@ set(REX_OPTION_JSON OFF CACHE BOOL "" FORCE)
 set(REX_OPTION_TOML OFF CACHE BOOL "" FORCE)
 set(REX_OPTION_INI OFF CACHE BOOL "" FORCE)
 set(SKSE_SUPPORT_XBYAK ON CACHE BOOL "" FORCE)
+set(SKSE_SUPPORT_PATCH_SAFETY ON CACHE BOOL "" FORCE)
 set(ENABLE_SKYRIM_SE ON CACHE BOOL "" FORCE)
 set(ENABLE_SKYRIM_AE ON CACHE BOOL "" FORCE)
 set(ENABLE_SKYRIM_VR OFF CACHE BOOL "" FORCE)
@@ -21,6 +22,7 @@ set(BUILD_TESTS OFF CACHE BOOL "" FORCE)
 
 # --- Make the content available
 FetchContent_MakeAvailable(CommonLibSSE)
+FetchContent_GetProperties(hde64)
 
 add_library("${PROJECT_NAME}" SHARED)
 set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ON)
@@ -61,20 +63,14 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
 
-set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_STATIC_RUNTIME ON)
-
 add_compile_definitions(NOMINMAX)
 add_compile_definitions(_UNICODE)
 
 # --- Common compiler options for all configurations ---
-target_compile_options(
-    "${PROJECT_NAME}"
-    PRIVATE
+set(PL_COMMON_COMPILE_OPTIONS
     /MP
-    $<$<BOOL:${GTS_STRICT_COMPILE}>:/W4;/WX>
-    $<$<NOT:$<BOOL:${GTS_STRICT_COMPILE}>>:/W1>
     /permissive-
+    /utf-8
     /Zc:alignedNew
     /Zc:auto
     /Zc:__cplusplus
@@ -94,6 +90,36 @@ target_compile_options(
     /Zc:threadSafeInit
     /Zc:trigraphs
     /Zc:wchar_t
+)
+
+set(PL_WARNING_OPTIONS
+    /W1
+    /WX
+    /external:anglebrackets
+    /external:W0
+    /w14263 # member function does not override any base class virtual function
+    /w14264 # no override available for virtual member function; function is hidden
+    /w14265 # class has virtual functions but destructor is not virtual
+    /w14266 # no override available for virtual member function from base
+    /w15204 # class has virtual functions but its trivial destructor is not virtual
+    /w15038 # data member will be initialized after another (reordered init)
+    /w15262 # implicit fall-through between switch cases
+    /w15263 # calling std::move on a temporary prevents copy elision
+    /w14296 # expression is always true or always false
+    /w14555 # result of expression not used
+    /w14701 # potentially uninitialized local variable used
+    /w14703 # potentially uninitialized local pointer variable used
+    /w14826 # conversion is sign-extended, may cause unexpected runtime behaviour
+    /w14928 # illegal copy-initialization; more than one user-defined conversion
+    /w14946 # reinterpret_cast used between related classes
+    /w14287 # unsigned/negative constant mismatch
+    /w15205 # delete of an abstract class with a non-virtual destructor (UB)
+    /w14548 # expression before comma has no effect
+    /w14319 # zero-extending to a greater size
+    /w14062 # unhandled enumerator in switch with no default label
+    /w14388 # signed/unsigned mismatch in comparison
+    /w14267 # conversion from size_t, possible loss of data
+    /w14191 # unsafe function-pointer conversion
     /wd4200 # nonstandard extension used : zero-sized array in struct/union
     /wd4100 # 'identifier' : unreferenced formal parameter
     /wd4101 # 'identifier': unreferenced local variable
@@ -102,6 +128,13 @@ target_compile_options(
     /wd4456 # declaration of 'identifier' hides previous local declaration
     /wd4457 # declaration of 'identifier' hides function parameter
     /wd4189 # 'identifier' : local variable is initialized but not referenced
+)
+
+target_compile_options(
+    "${PROJECT_NAME}"
+    PRIVATE
+    ${PL_COMMON_COMPILE_OPTIONS}
+    ${PL_WARNING_OPTIONS}
 )
 
 # --- Linker Options ---
@@ -121,8 +154,6 @@ find_package(spdlog CONFIG REQUIRED)
 
 target_include_directories(
 	${PROJECT_NAME}
-	PUBLIC
-	${CMAKE_CURRENT_SOURCE_DIR}/include
 	PRIVATE
 	${CMAKE_CURRENT_BINARY_DIR}/cmake
 	${CMAKE_CURRENT_SOURCE_DIR}/src

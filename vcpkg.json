@@ -13,7 +13,8 @@
         "clib-util",
         "detours",
         "xbyak",
-        "simpleini"
+        "simpleini",
+        "abseil"
       ]
     }
   },

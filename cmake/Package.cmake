@@ -35,20 +35,20 @@ if(PL_BUILD_DISTRIBUTION)
       )
     endif()
     
-    # Copy Fonts directory
+    # Copy Bundle directory
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/distribution/Bundle")
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
                 "${CMAKE_CURRENT_SOURCE_DIR}/distribution/Bundle"
                 "${DEPLOY_DIR}"
-        COMMENT "Copying Bunle directory contents to deployment directory"
+        COMMENT "Copying Bundle directory contents to deployment directory"
       )
     endif()
 
     # Clean output DLLs and PDBs
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/distribution")
-      file(GLOB_RECURSE OUTPUT_DLLS "${CMAKE_CURRENT_SOURCE_DIR}/distribution/Plugin-*/*.dll")
-      file(GLOB_RECURSE OUTPUT_PDBS "${CMAKE_CURRENT_SOURCE_DIR}/distribution/Plugin-*/*.pdb")
+      file(GLOB_RECURSE OUTPUT_DLLS "${CMAKE_CURRENT_SOURCE_DIR}/distribution/Package-*/*.dll")
+      file(GLOB_RECURSE OUTPUT_PDBS "${CMAKE_CURRENT_SOURCE_DIR}/distribution/Package-*/*.pdb")
 
       if(OUTPUT_DLLS)
         set_property(TARGET ${PROJECT_NAME}

@@ -535,3 +535,7 @@ build/
 distribution/Package-*/*
 vcpkg
 
+.claude/
+
+# The build-output folder rules above (Debug/, Log/, bin/, ...) must not hide source folders.
+!src/**/
